@@ -10,9 +10,8 @@ agent = (
 
 base_url = 'https://www.barneys.com'
 url = (
-    '''
-    f{base_url}/category/new-arrivals/N-fh7reaZ1109flh?recordsPerPage=96&page=
-    '''
+    f'''{base_url}/category/new-arrivals/
+        N-fh7reaZ1109flh?recordsPerPage=96&page='''
 )
 
 r = requests.get(url, headers={'User-Agent': agent})
@@ -56,7 +55,7 @@ def main():
             try:
                 for link in item.find_all('a', {'class': 'brand-link'}):
                     link = link['href']
-                    my_dict['ProductLink'] = 'f{base_url}{link}'
+                    my_dict['ProductLink'] = f'{base_url}{link}'
             except AttributeError:
                 None
             my_list.append(my_dict)
