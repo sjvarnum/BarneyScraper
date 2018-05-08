@@ -11,7 +11,7 @@ agent = (
 base_url = 'https://www.barneys.com'
 url = (
     f'''{base_url}/category/new-arrivals/
-        N-fh7reaZ1109flh?recordsPerPage=96&page='''
+    N-fh7reaZ1109flh?recordsPerPage=96&page='''
 )
 
 r = requests.get(url, headers={'User-Agent': agent})
