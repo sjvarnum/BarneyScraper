@@ -13,11 +13,6 @@ page = ''
 url_params = {'recordsPerPage': pages, 'page': page}
 base_url = 'https://www.barneys.com'
 sub_url = '/category/new-arrivals/N-fh7reaZ1109flh'
-# url = (
-#     f'''{base_url}/category/new-arrivals/
-#     N-fh7reaZ1109flh?recordsPerPage=96&page='''
-# )
-
 url = f'{base_url}{sub_url}'
 
 r = requests.get(url, params=url_params, headers={'User-Agent': agent})
@@ -25,7 +20,6 @@ c = r.content
 soup = BeautifulSoup(c, 'html.parser')
 all = soup.find_all('div', {'class': 'product-tile'})
 max_page = soup.find('input', attrs={'id': 'currentPageNumber'}).get('max')
-print(max_page)
 
 
 def main():
@@ -70,7 +64,5 @@ def main():
 
 if __name__ == '__main__':
     data = main()
-    print(len(data))
     df = pd.DataFrame(data)
-    print(df.head())
     df.to_csv('new_arrivals_at_barneys_com.csv', index=False)
