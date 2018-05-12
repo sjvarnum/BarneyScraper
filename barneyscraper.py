@@ -8,13 +8,19 @@ agent = (
     '(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299'
 )
 
+pages = '96'
+page = ''
+url_params = {'recordsPerPage': pages, 'page': page}
 base_url = 'https://www.barneys.com'
-url = (
-    f'''{base_url}/category/new-arrivals/
-    N-fh7reaZ1109flh?recordsPerPage=96&page='''
-)
+sub_url = '/category/new-arrivals/N-fh7reaZ1109flh'
+# url = (
+#     f'''{base_url}/category/new-arrivals/
+#     N-fh7reaZ1109flh?recordsPerPage=96&page='''
+# )
 
-r = requests.get(url, headers={'User-Agent': agent})
+url = f'{base_url}{sub_url}'
+
+r = requests.get(url, params=url_params, headers={'User-Agent': agent})
 c = r.content
 soup = BeautifulSoup(c, 'html.parser')
 all = soup.find_all('div', {'class': 'product-tile'})
@@ -67,4 +73,4 @@ if __name__ == '__main__':
     print(len(data))
     df = pd.DataFrame(data)
     print(df.head())
-    df.to_csv('New Arrivals at Barneys_com.csv', index=False)
+    df.to_csv('new_arrivals_at_barneys_com.csv', index=False)
