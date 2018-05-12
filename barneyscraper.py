@@ -3,36 +3,50 @@ import requests
 import pandas as pd
 
 
-agent = (
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-    '(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299'
-)
+def requestor():
 
-pages = '96'
-page = ''
-url_params = {'recordsPerPage': pages, 'page': page}
-base_url = 'https://www.barneys.com'
-sub_url = '/category/new-arrivals/N-fh7reaZ1109flh'
-url = f'{base_url}{sub_url}'
+    agent = (
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+        '(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299'
+    )
 
-r = requests.get(url, params=url_params, headers={'User-Agent': agent})
-c = r.content
-soup = BeautifulSoup(c, 'html.parser')
-# all = soup.find_all('div', {'class': 'product-tile'})
-max_page = soup.find('input', attrs={'id': 'currentPageNumber'}).get('max')
-print(f'Max Pages: {max_page}')
+    item_cnt = '96'
+    page_nbr = ''
+    url_params = {'recordsPerPage': item_cnt, 'page': page_nbr}
+    base_url = 'https://www.barneys.com'
+    sub_url = '/category/new-arrivals/N-fh7reaZ1109flh'
+    url = f'{base_url}{sub_url}'
+
+    r = requests.get(url, params=url_params, headers={'User-Agent': agent})
+    c = r.content
+    soup = BeautifulSoup(c, 'html.parser')
+    return agent, base_url, soup, url, url_params
+
+
+def get_max_page_nbr():
+
+    agent, base_url, soup, url, url_params = requestor()
+    max_page_nbr = soup.find('input',
+                             attrs={'id': 'currentPageNumber'}).get('max')
+    return max_page_nbr
+
+
+def get_products():
+
+    agent, base_url, soup, url, url_params = requestor()
+    products = soup.find_all('div', {'class': 'product-tile'})
+    return products
 
 
 def main():
-    my_list = []
-    for page in range(1, int(max_page) + 1, 1):
-        # page_url = url + str(page)
-        r = requests.get(url, params=url_params, headers={'User-Agent': agent})
-        c = r.content
-        soup = BeautifulSoup(c, 'html.parser')
-        all = soup.find_all('div', {'class': 'product-tile'})
+    agent, base_url, soup, url, url_params = requestor()
+    max_page = get_max_page_nbr()
+    products = get_products()
 
-        for item in all:
+    product_list = []
+    for page in range(1, int(max_page) + 1, 1):
+
+        for item in products:
             my_dict = {}
             try:
                 my_dict['ProductID'] = (
@@ -59,8 +73,9 @@ def main():
                     my_dict['ProductLink'] = f'{base_url}{link}'
             except AttributeError:
                 None
-            my_list.append(my_dict)
-    return my_list
+            product_list.append(my_dict)
+
+    return product_list
 
 
 if __name__ == '__main__':
