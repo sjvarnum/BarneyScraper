@@ -18,15 +18,16 @@ url = f'{base_url}{sub_url}'
 r = requests.get(url, params=url_params, headers={'User-Agent': agent})
 c = r.content
 soup = BeautifulSoup(c, 'html.parser')
-all = soup.find_all('div', {'class': 'product-tile'})
+# all = soup.find_all('div', {'class': 'product-tile'})
 max_page = soup.find('input', attrs={'id': 'currentPageNumber'}).get('max')
+print(f'Max Pages: {max_page}')
 
 
 def main():
     my_list = []
     for page in range(1, int(max_page) + 1, 1):
-        page_url = url + str(page)
-        r = requests.get(page_url, headers={'User-Agent': agent})
+        # page_url = url + str(page)
+        r = requests.get(url, params=url_params, headers={'User-Agent': agent})
         c = r.content
         soup = BeautifulSoup(c, 'html.parser')
         all = soup.find_all('div', {'class': 'product-tile'})
@@ -59,10 +60,11 @@ def main():
             except AttributeError:
                 None
             my_list.append(my_dict)
-        return my_list
+    return my_list
 
 
 if __name__ == '__main__':
     data = main()
     df = pd.DataFrame(data)
+    print(f'Items Retrieved: {len(df.index)}')
     df.to_csv('new_arrivals_at_barneys_com.csv', index=False)
