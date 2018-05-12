@@ -3,4 +3,5 @@
 *.json
 *.png
 *.ipynb
+*test*
 .ipynb_checkpoints
